@@ -1,0 +1,34 @@
+# code: language=ansible
+---
+
+# 00 # Always
+
+- name: "PHP | Always"
+  ansible.builtin.include_tasks: "always/main.yml"
+  tags:
+    - always
+    - php
+
+# 01 # Repositories
+
+- name: "PHP | Repositories"
+  ansible.builtin.include_tasks: "repositories/{{ dist_pkg_mgr }}.yml"
+  tags:
+    - php
+    - php-repositories
+
+# 02 # Install
+
+#- name: "PHP | Install"
+#  ansible.builtin.include_tasks: "install/{{ dist_pkg_mgr }}.yml"
+#  tags:
+#    - php
+#    - php-install
+
+# 03 # Configure
+
+#- name: "PHP | Configure"
+#  ansible.builtin.include_tasks: "configure/main.yml"
+#  tags:
+#    - php
+#    - php-configure

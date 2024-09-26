@@ -1,0 +1,16 @@
+#jinja2: lstrip_blocks: "True", trim_blocks: "True"
+
+[{{ item.name }}]
+name = {{ item.name }}
+{% if item.get('url') %}
+baseurl = {{ item.url }}
+{% endif %}
+{% if item.get('mirror') %}
+mirrorlist = {{ item.mirror }}
+{% endif %}
+{% if item.get('gpg') %}
+gpgkey = {{ item.gpg | to_list | join("\n         ") }}
+{% endif %}
+{% for key, value in item.options.items() %}
+{{ key }} = {{ value }}
+{% endfor %}

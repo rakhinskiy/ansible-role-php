@@ -1,0 +1,40 @@
+---
+# code: language=ansible
+
+# 00 # Always
+
+php_always_packages:
+  - "dnf-utils"
+  - "oracle-epel-release-el{{ dist_version }}"
+  - "procps-ng"
+  - "python3-libselinux"
+  - "python3-policycoreutils"
+  - "virt-what"
+
+# 01 # Repositories
+
+php_repositories:
+
+  - name: "remi"
+    mirror: "http://cdn.remirepo.net/enterprise/$releasever/remi/$basearch/mirror"
+    gpg: "https://rpms.remirepo.net/enterprise/{{ dist_version }}/RPM-GPG-KEY-remi"
+    options:
+      enabled: "1"
+      gpgcheck: "1"
+      module_hotfixes: "1"
+
+  - name: "remi-modular"
+    mirror: "http://cdn.remirepo.net/enterprise/$releasever/modular/$basearch/mirror"
+    gpg: "https://rpms.remirepo.net/enterprise/{{ dist_version }}/RPM-GPG-KEY-remi"
+    options:
+      enabled: "1"
+      gpgcheck: "1"
+      module_hotfixes: "1"
+
+  - name: "remi-safe"
+    mirror: "http://cdn.remirepo.net/enterprise/$releasever/safe/$basearch/mirror"
+    gpg: "https://rpms.remirepo.net/enterprise/{{ dist_version }}/RPM-GPG-KEY-remi"
+    options:
+      enabled: "1"
+      gpgcheck: "1"
+      module_hotfixes: "1"

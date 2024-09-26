@@ -1,0 +1,61 @@
+# code: language=ansible
+
+---
+- name: "PHP | Repositories | Apt | GPG Keys | Debug"
+  ansible.builtin.debug:
+    msg: "{{ php_repositories | get_keys('key') }}"
+    verbosity: 1
+  tags:
+    - php
+    - php-repositories
+
+- name: "PHP | Repositories | Apt | GPG Keys | Keyserver"
+  ansible.builtin.apt_key:
+    keyserver: "keyserver.ubuntu.com"
+    id: "{{ item }}"
+    state: present
+  with_items: "{{ php_repositories | get_keys('gpg') }}"
+  when:
+    - php_repositories | is_ne_list_dicts
+    - not item is url
+  become: true
+  tags:
+    - php
+    - php-repositories
+
+- name: "PHP | Repositories | Apt | GPG Keys | HTTP"
+  ansible.builtin.apt_key:
+    url: "{{ item }}"
+    state: present
+  with_items: "{{ php_repositories | get_keys('gpg') }}"
+  when:
+    - php_repositories | is_ne_list_dicts
+    - item is url
+  become: true
+  tags:
+    - php
+    - php-repositories
+
+- name: "PHP | Repositories | Apt | Add repository"
+  ansible.builtin.template:
+    src: "repositories/apt.list.j2"
+    dest: "/etc/apt/sources.list.d/{{ item.name }}.list"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+    backup: false
+  with_items: "{{ php_repositories }}"
+  when:
+    - php_repositories | is_ne_list_dicts
+  notify:
+    - Update apt cache
+  become: true
+  tags:
+    - php
+    - php-repositories
+
+- name: "PHP | Repositories | Apt | Flush handlers"
+  ansible.builtin.meta: flush_handlers
+  tags:
+    - php
+    - php-repositories

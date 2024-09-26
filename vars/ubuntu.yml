@@ -1,0 +1,21 @@
+# code: language=ansible
+---
+
+# 00 # Always
+
+php_always_packages:
+  - "apt-transport-https"
+  - "ca-certificates"
+  - "gnupg2"
+  - "procps"
+  - "python3-apt"
+  - "virt-what"
+
+# 01 # Repositories
+
+php_repositories:
+  - name: "php"
+    url: "https://ppa.launchpadcontent.net/ondrej/php/{{ dist_name }}/ {{ dist_codename }} main"
+    gpg:
+      - "71DAEAAB4AD4CAB6"
+      - "4F4EA0AAE5267A6C"

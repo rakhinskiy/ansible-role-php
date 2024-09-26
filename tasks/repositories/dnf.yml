@@ -1,0 +1,40 @@
+# code: language=ansible
+
+---
+
+- name: "PHP | Repositories | Dnf / Yum | GPG Keys"
+  ansible.builtin.rpm_key:
+    key: "{{ item }}"
+    state: present
+  with_items: "{{ php_repositories | get_keys('gpg') }}"
+  when:
+    - php_repositories | is_ne_list_dicts
+    - item is url
+  become: true
+  tags:
+    - php
+    - php-repositories
+
+- name: "PHP | Repositories | Dnf / Yum | Add repository"
+  ansible.builtin.template:
+    src: "repositories/dnf.repo.j2"
+    dest: "/etc/yum.repos.d/{{ item.name }}.repo"
+    owner: "root"
+    group: "root"
+    mode: "0644"
+    backup: false
+  with_items: "{{ php_repositories }}"
+  when:
+    - php_repositories | is_ne_list_dicts
+  notify:
+    - Update dnf cache
+  become: true
+  tags:
+    - php
+    - php-repositories
+
+- name: "PHP | Repositories | Dnf / Yum | Flush handlers"
+  ansible.builtin.meta: flush_handlers
+  tags:
+    - php
+    - php-repositories
